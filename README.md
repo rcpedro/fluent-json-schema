@@ -1,15 +1,11 @@
 # Fluent::Json::Schema
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fluent/json/schema`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'fluent-json-schema'
+gem 'fluent-json-schema', git: 'https://github.com/rcpedro/fluent-json-schema.git'
 ```
 
 And then execute:
@@ -22,7 +18,143 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Basic Usage
+
+Given:
+
+```ruby
+basic = Fluent::Json::Schema::Terms::Obj.new(:user)
+basic
+  .req
+    .strs(:first_name, :last_name, :username, :contact_no, :email, status: { enum: ["active", "inactive"]})
+    .bools(:super)
+    .dates(:created_at, :updated_at)
+  .opt
+    .strs(:created_by, :updated_by)
+```
+
+Calling `as_json` would give the following result:
+
+```ruby
+{
+  type: :object,
+  additionalProperties: false,
+  required: [
+    :first_name, :last_name, :username, :contact_no, :email, 
+    :status, :super, :created_at, :updated_at
+  ],
+  properties: {
+    first_name: { type: :string },
+    last_name:  { type: :string },
+    email:      { type: :string },
+    username:   { type: :string },
+    contact_no: { type: :string },
+    status:     { type: :string, enum: ["active", "inactive"] },
+    super:      { type: :boolean },
+    created_at: { type: :string, format: 'date-time' },
+    updated_at: { type: :string, format: 'date-time' },
+    created_by: { type: :string },
+    updated_by: { type: :string }
+  }
+}
+```
+
+### Nested Objects
+
+Given:
+
+```ruby
+home = Fluent::Json::Schema::Terms::Obj.new(:home)
+
+home
+  .req
+    .obj(:address) { |addr|
+      addr
+        .req.strs(:city, :country)
+        .opt.strs(:name, :street)
+    }
+    .obj(:owner) { |owner|
+      owner
+        .req.str(:email)
+        .opt.strs(:name, :contact_no)
+    }
+```
+
+Calling `as_json` would give the following result:
+
+```ruby
+{
+  type: :object,
+  additionalProperties: false,
+  required: [
+    :address, :owner
+  ],
+  properties: {
+    address: {
+      type: :object,
+      additionalProperties: false,
+      required: [:city, :country],
+      properties: {
+        city:    { type: :string },
+        country: { type: :string },
+        name:    { type: :string },
+        street:  { type: :string }
+      }
+    },
+    owner: {
+      type: :object,
+      additionalProperties: false,
+      required: [:email],
+      properties: {
+        email: { type: :string },
+        name: { type: :string },
+        contact_no: { type: :string }
+      }
+    }
+  }
+}
+```
+
+### With Active Record
+
+Given:
+
+```ruby
+user = Fluent::Json::Schema::Terms::Obj.new(:user)
+user.lookup(User)
+    .reflect(
+      :first_name, :last_name, :email, :username, :contact_no,
+      :super, :status, :created_by, :updated_by, :created_at,
+      :updated_at
+    )
+```
+
+Calling `as_json` would give the following result:
+
+```ruby
+{
+  type: :object,
+  additionalProperties: false,
+  required: [
+    :first_name, :last_name, :email, :username, :super, :status, 
+    :created_by, :updated_by, :created_at, :updated_at
+  ],
+
+  properties: {
+    first_name: { type: :string },
+    last_name:  { type: :string },
+    email:      { type: :string },
+    username:   { type: :string },
+    contact_no: { type: :string },
+    super:      { type: :boolean },
+    status:     { type: :string, enum: ["active", "inactive"] },
+    created_by: { type: :string },
+    updated_by: { type: :string },
+    created_at: { type: :string, format: 'date-time' },
+    updated_at: { type: :string, format: 'date-time' }
+  }
+}
+```
 
 ## Development
 

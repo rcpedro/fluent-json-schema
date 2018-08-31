@@ -1,5 +1,7 @@
 # Fluent::Json::Schema
 
+Build [json schemas](https://json-schema.org/) fluently.
+
 ## Installation
 
 Add this line to your application's Gemfile:

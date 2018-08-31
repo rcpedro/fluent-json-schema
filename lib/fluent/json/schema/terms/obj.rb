@@ -27,8 +27,11 @@ class Fluent::Json::Schema::Terms::Obj < Fluent::Json::Schema::Terms::Field
     return self
   end
 
-  def add(field)
-    @fields[field.name] = self.prepare(field)
+  def add(*fields)
+    fields.each do |field|
+      @fields[field.name] = self.prepare(field)
+    end
+    return self
   end
 
   def [](prop)

@@ -28,7 +28,7 @@ module Fluent
 
           lambda do |api, term, definition, args, block|
             if definition.class.name.demodulize.downcase.to_sym == term
-              return api.add(definition.new(*args, &block))
+              return api.add(definition.new(*args))
             end
 
             results = Fluent::Lexicon.collect(
@@ -36,12 +36,8 @@ module Fluent
               optioned.curry.(definition)
             ).call(*args)
 
-            results.each do |result|
-              block.call(result) if block.present?
-              api.add(result)
-            end 
-            
-            return api
+            block.call(*results) if block.present?
+            return api.add(*results)
           end
         end
       end

@@ -70,16 +70,18 @@ home = Fluent::Json::Schema::Terms::Obj.new(:home)
 
 home
   .req
-    .obj(:address) { |addr|
-      addr
+    .obj(:address) { |address|
+      address
         .req.strs(:city, :country)
         .opt.strs(:name, :street)
     }
     .obj(:owner) { |owner|
       owner
-        .req.str(:email)
-        .opt.strs(:name, :contact_no)
+        .req.str(:first_name, :last_name, email: { fmt: :email }) 
+        .opt.strs(:title, :contact_no)
     }
+  .opt
+    .date(:date_built)
 ```
 
 Calling `as_json` would give the following result:
@@ -106,12 +108,18 @@ Calling `as_json` would give the following result:
     owner: {
       type: :object,
       additionalProperties: false,
-      required: [:email],
+      required: [:first_name, :last_name, :email],
       properties: {
-        email: { type: :string },
-        name: { type: :string },
+        email:      { type: :string, format: :email },
+        title:      { type: :string },
+        first_name: { type: :string },
+        last_name:  { type: :string },
         contact_no: { type: :string }
       }
+    },
+    date_built: {
+      type: :string,
+      format: :'date-time'
     }
   }
 }

@@ -10,8 +10,7 @@ class Fluent::Json::Schema::Terms::Field
     @required = false
     @constraints = []
 
-    @enum = options[:enum]
-    @default = options[:default]
+    self.set(options)
   end
 
   def mandate

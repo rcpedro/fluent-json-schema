@@ -8,16 +8,18 @@ RSpec.describe Fluent::Json::Schema::Terms::Obj do
 
       @home
         .req
-          .obj(:address) { |addr|
-            addr
+          .obj(:address) { |address|
+            address
               .req.strs(:city, :country)
               .opt.strs(:name, :street)
           }
           .obj(:owner) { |owner|
             owner
-              .req.str(:email)
-              .opt.strs(:name, :contact_no)
+              .req.str(:first_name, :last_name, email: { fmt: :email }) 
+              .opt.strs(:title, :contact_no)
           }
+        .opt
+          .date(:date_built)
     end
 
     subject { @home }
@@ -43,12 +45,18 @@ RSpec.describe Fluent::Json::Schema::Terms::Obj do
         owner: {
           type: :object,
           additionalProperties: false,
-          required: [:email],
+          required: [:first_name, :last_name, :email],
           properties: {
-            email: { type: :string },
-            name: { type: :string },
+            email:      { type: :string, format: :email },
+            title:      { type: :string },
+            first_name: { type: :string },
+            last_name:  { type: :string },
             contact_no: { type: :string }
           }
+        },
+        date_built: {
+          type: :string,
+          format: :'date-time'
         }
       }
     })}
@@ -84,8 +92,8 @@ RSpec.describe Fluent::Json::Schema::Terms::Obj do
           contact_no: { type: :string },
           status:     { type: :string, enum: ["active", "inactive"] },
           super:      { type: :boolean },
-          created_at: { type: :string, format: 'date-time' },
-          updated_at: { type: :string, format: 'date-time' },
+          created_at: { type: :string, format: :'date-time' },
+          updated_at: { type: :string, format: :'date-time' },
           created_by: { type: :string },
           updated_by: { type: :string }
         }
@@ -124,8 +132,8 @@ RSpec.describe Fluent::Json::Schema::Terms::Obj do
     it { expect(subject[:created_by].as_json).to eq({ type: :string }) }
     it { expect(subject[:updated_by].as_json).to eq({ type: :string }) }
 
-    it { expect(subject[:created_at].as_json).to eq({ type: :string, format: 'date-time' })}
-    it { expect(subject[:updated_at].as_json).to eq({ type: :string, format: 'date-time' })}
+    it { expect(subject[:created_at].as_json).to eq({ type: :string, format: :'date-time' })}
+    it { expect(subject[:updated_at].as_json).to eq({ type: :string, format: :'date-time' })}
 
     it do 
       expect(subject.as_json).to eq({
@@ -146,8 +154,8 @@ RSpec.describe Fluent::Json::Schema::Terms::Obj do
           status:     { type: :string, enum: ["active", "inactive"] },
           created_by: { type: :string },
           updated_by: { type: :string },
-          created_at: { type: :string, format: 'date-time' },
-          updated_at: { type: :string, format: 'date-time' }
+          created_at: { type: :string, format: :'date-time' },
+          updated_at: { type: :string, format: :'date-time' }
         }
       })
     end

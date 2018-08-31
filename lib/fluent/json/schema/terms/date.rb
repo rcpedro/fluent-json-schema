@@ -9,6 +9,6 @@ class Fluent::Json::Schema::Terms::Date < Fluent::Json::Schema::Terms::Str
   end
 
   def format
-    return 'date-time'
+    return :'date-time'
   end
 end

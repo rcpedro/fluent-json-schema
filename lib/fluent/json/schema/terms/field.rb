@@ -7,13 +7,13 @@ class Fluent::Json::Schema::Terms::Field
 
   def initialize(name, options={})
     @name = name
-    @required = false
+    @required = options[:required]
     @constraints = []
 
     self.set(options)
   end
 
-  def mandate
+  def require
     @required = true
     return self
   end

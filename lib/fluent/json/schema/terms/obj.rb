@@ -10,10 +10,10 @@ class Fluent::Json::Schema::Terms::Obj < Fluent::Json::Schema::Terms::Field
 
   attr_reader :name, :fields, :klass, :additional
 
-  def initialize(name)
-    super(name)
+  def initialize(name, options={})
+    super(name, options)
     @fields = {}
-    @additional = false
+    @additional ||= false
     @mode = :optional
   end
 
@@ -85,7 +85,7 @@ class Fluent::Json::Schema::Terms::Obj < Fluent::Json::Schema::Terms::Field
     def prepare(field)
       case @mode
       when :req
-        return field.mandate
+        return field.require
       when :opt
         return field.optionalise
       end

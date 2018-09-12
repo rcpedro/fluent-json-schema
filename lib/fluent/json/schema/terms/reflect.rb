@@ -30,7 +30,7 @@ class Fluent::Json::Schema::Terms::Reflect < SimpleDelegator
     
     @instance = instance_klass.new(name)
     @instance.set(enum: enum.keys) if enum.present?
-    @instance.mandate if not column.null
+    @instance.require if not column.null
 
     super(@instance)
   end

@@ -13,7 +13,7 @@ class Fluent::Json::Schema::Terms::Field
     self.set(options)
   end
 
-  def require
+  def mandate
     @required = true
     return self
   end

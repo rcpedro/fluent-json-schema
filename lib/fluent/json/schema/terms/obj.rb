@@ -85,7 +85,7 @@ class Fluent::Json::Schema::Terms::Obj < Fluent::Json::Schema::Terms::Field
     def prepare(field)
       case @mode
       when :req
-        return field.require
+        return field.mandate
       when :opt
         return field.optionalise
       end

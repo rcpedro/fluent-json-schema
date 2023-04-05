@@ -174,5 +174,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/fluent-json-schema.
+Bug reports and pull requests are welcome on GitHub at https://github.com/rcpedro/fluent-json-schema.
 

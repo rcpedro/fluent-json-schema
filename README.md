@@ -7,7 +7,7 @@ Build [json schemas](https://json-schema.org/) fluently.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'fluent-json-schema', git: 'https://github.com/rcpedro/fluent-json-schema.git'
+gem 'fluent-json-schema'
 ```
 
 And then execute:
